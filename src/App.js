@@ -29,7 +29,7 @@ const App = () => {
   const [ betCount, setBetCount ] = useState(0)
   const [ betFace, setBetFace ] = useState(0)
   const [ betOdds, setBetOdds ] = useState(0)
-  const [ bets, setBets ] = useState([{count: 0, face: 2, odds: 1}])
+  const [ bets, setBets ] = useState([{count: 0, face: 2}])
 
   useEffect(
     () => {
@@ -48,27 +48,29 @@ const App = () => {
 
   useEffect(
     () => {
-      let inHand = hand.filter( item => (item === betFace) ).length
-      let toPull = betCount - inHand
-      let unknownDice = diceCount - handCount
-
-/*      console.log("----- inHand -------")
+      let finalProb = 0
+      //determine the number of dice with the correct face in your hand
+      let inHand = hand.filter( item => (item === betFace || item === 1) ).length
       console.log(inHand)
-      console.log("----- toPull -------")
-      console.log(toPull)
-      console.log("----- unknownDice -------")
-      console.log(unknownDice)*/
+      //number of unknown dice on the table
+      let unknownDice = diceCount - handCount
+      //iterate over all possible winning hands
+      let toPull = Math.max(0, betCount - inHand )
+      if (toPull > 0) {
+        for (let i=toPull; i<=unknownDice; i++) {
+          let pSuccess = Math.pow(1/3,i) //1's are wild
+          let pFailure = Math.pow(2/3,unknownDice-i)
+          let combinations = FACTORIALS[unknownDice] / ( FACTORIALS[unknownDice-i] * FACTORIALS[i])
+          
+          console.log('p individual')
+          console.log(pSuccess * pFailure * combinations)
+          finalProb += ( pSuccess * pFailure * combinations )      
+        }
+      } else {
+        finalProb = 1
+      }
 
-      let pSuccess = Math.pow(1/3,toPull) //1's are wild
-      let pFailure = Math.pow(2/3,unknownDice-toPull)
-
-/*      console.log("----- pSuccess -------")
-      console.log(pSuccess)
-      console.log("----- pFailure -------")
-      console.log(pFailure)*/
-
-      let combinations = FACTORIALS[unknownDice] / ( FACTORIALS[unknownDice-toPull] * FACTORIALS[toPull])
-      setBetOdds( pSuccess * pFailure * combinations )
+      setBetOdds(finalProb)
     },
     [ hand, betCount, diceCount, handCount, betFace ]
   )
@@ -160,6 +162,7 @@ const App = () => {
         type="number"
         placeholder="# of dice"
         onChange={ (event) => setBetCount(parseInt(event.target.value))}
+        value={betCount}
       />
       <input
         className={classFormatter(
@@ -169,6 +172,7 @@ const App = () => {
         type="number"
         placeholder="dice face"
         onChange={ (event) => setBetFace(parseInt(event.target.value))}
+        value={betFace}
       />
       <button
         className="c_app__submit-bet"
