@@ -1,0 +1,66 @@
+input {
+	border: none;
+	margin: .25rem;
+	padding: .5rem;
+	border-radius: .25rem;
+}
+
+button {
+	background: none;
+	border: none;
+	margin: .25rem;
+	padding: .5rem;
+	border-radius: .25rem;
+	background: #dfdfdf;
+	width: fit-content;
+}
+
+a {
+	color: #dfdfdf;
+}
+
+.c_app {
+	background-color: #3e3e3e;
+	max-width: 1000px;
+	display: flex;
+	flex-direction: column;
+	padding: 2rem;
+	color: #dfdfdf;
+	font-size: 1.25rem;
+
+
+	&__title {
+		font-size: 2.5rem;
+	}
+
+	&__dice-count {
+	}
+
+	&__hand-count {
+	}
+
+
+	&__dice-hand {
+		list-style: none;
+		margin: 0;
+		padding: .5rem;
+	}
+
+	&__bet-input {
+
+		&--invalid {
+			background-color: #b84141;;
+		}
+	}
+
+	&__submit-bet {
+	}
+
+	&__previous-bets {
+		:first-child {
+			:after {
+				content: "  <--first bet";
+			}
+		}
+	}
+}
